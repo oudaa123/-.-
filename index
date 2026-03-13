@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>جنة - عرض الأسعار (محدث باليوان)</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: linear-gradient(135deg, #2b5a4c 0%, #1e7b5e 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+/* ترويسة مع التاريخ */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+h2 {
+    color: #1e7b5e;
+    font-size: 2.5em;
+    margin: 0;
+    position: relative;
+    padding-bottom: 0;
+}
+
+/* شاشة سعر اليوان - علوية صغيرة */
+.yuan-display {
+    background: linear-gradient(90deg, #1e7b5e, #2b5a4c);
+    border-radius: 100px;
+    padding: 8px 18px;
+    border: 1px solid #d4af37;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    font-family: 'Courier New', monospace;
+    direction: ltr;
+    display: inline-flex;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.yuan-display .price {
+    font-weight: bold;
+    color: #d4af37;
+    font-size: 1.3em;
+    text-shadow: 0 0 5px #d4af37;
+}
+
+.yuan-display .currency {
+    color: white;
+    font-size: 0.9em;
+    margin: 0 5px;
+}
+
+.yuan-display .indicator {
+    background: #27ae6030;
+    color: #2ecc71;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+/* زر اشتري الان */
+.buy-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 5px 15px rgba(255,71,87,0.3);
+    transition: all 0.3s ease;
+    border: 2px solid white;
+}
+
+.buy-button:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(255,71,87,0.4);
+}
+
+.buy-button i {
+    font-size: 1.3em;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-5px); }
+}
+
+.date-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #2b5a4c 0%, #1e7b5e 100%);
+    color: white;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-size: 1.3em;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    margin-top: 10px;
+    border: 2px solid white;
+}
+
+.date-badge i {
+    margin-left: 10px;
+    font-style: normal;
+}
+
+/* مربع البحث */
+.search-container {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+#searchInput {
+    width: 100%;
+    max-width: 600px;
+    padding: 18px 30px;
+    font-size: 1.2em;
+    border: 3px solid transparent;
+    border-radius: 60px;
+    outline: none;
+    transition: all 0.2s ease;
+    background: white;
+    font-family: inherit;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%231e7b5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+    background-repeat: no-repeat;
+    background-position: left 20px center;
+    background-size: 24px;
+    padding-right: 30px;
+    padding-left: 55px;
+}
+
+#searchInput:focus {
+    border-color: #1e7b5e;
+    box-shadow: 0 10px 25px rgba(30, 123, 94, 0.3);
+    transform: translateY(-2px);
+}
+
+#searchInput::placeholder {
+    color: #aaa;
+    font-size: 1em;
+}
+
+/* مؤشر البحث */
+.search-indicator {
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    display: none;
+}
+
+.search-indicator.active {
+    display: block;
+}
+
+.search-indicator span {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #1e7b5e;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+/* شبكة المنتجات */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+/* بطاقة المنتج */
+.product-card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    border: 1px solid #f0f0f0;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.product-image img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+    border-radius: 10px;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.product-info {
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(to bottom, white, #fafafa);
+}
+
+.product-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    min-height: 55px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-price {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #1e7b5e;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.original-price {
+    font-size: 0.7em;
+    color: #999;
+    text-decoration: line-through;
+}
+
+/* شارة المنتج الخاص */
+.special-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 0.9em;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(180, 130, 0, 0.3);
+    z-index: 1;
+    animation: pulse 2s infinite;
+}
+
+/* شارة السعر الأصلي */
+.original-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 0.9em;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    z-index: 1;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* رسالة عدم وجود نتائج */
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px;
+    font-size: 1.3em;
+    color: #666;
+    background: #f8f9fa;
+    border-radius: 20px;
+    border: 2px dashed #1e7b5e;
+}
+
+/* شريط التحميل */
+.loading {
+    text-align: center;
+    padding: 60px;
+    font-size: 1.2em;
+    color: #666;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #e1e1e1;
+    border-top: 5px solid #1e7b5e;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* إحصائيات */
+.stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 18px 25px;
+    background: linear-gradient(135deg, #1e7b5e10 0%, #2b5a4c10 100%);
+    border-radius: 15px;
+    color: #444;
+    flex-wrap: wrap;
+    gap: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(30, 123, 94, 0.2);
+}
+
+.count {
+    font-weight: bold;
+    color: #1e7b5e;
+    font-size: 1.3em;
+    background: white;
+    padding: 5px 15px;
+    border-radius: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* نتائج البحث السريع */
+.search-stats {
+    color: #1e7b5e;
+    font-weight: bold;
+}
+
+/* تنسيق للجوال */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    h2 {
+        font-size: 2em;
+    }
+    
+    .buy-button {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+    
+    .date-badge {
+        font-size: 1.1em;
+        padding: 10px 20px;
+    }
+    
+    #searchInput {
+        font-size: 1em;
+        padding: 15px 20px;
+        padding-left: 50px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .product-image {
+        height: 180px;
+        padding: 10px;
+    }
+    
+    .product-info {
+        padding: 15px;
+    }
+    
+    .product-name {
+        font-size: 1em;
+        min-height: 45px;
+    }
+    
+    .product-price {
+        font-size: 1.3em;
+    }
+    
+    .stats {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <!-- ترويسة مع التاريخ وزر اشتري الان وشاشة اليوان -->
+    <div class="header">
+        <div class="header-content">
+            <h2>🌿 منتجات جنة</h2>
+            
+            <!-- شاشة سعر اليوان - علوية صغيرة -->
+            <div class="yuan-display">
+                <span style="font-size: 1.1em; margin-right: 5px;">🇨🇳</span>
+                <span class="price" id="yuanPrice">0.00</span>
+                <span class="currency">EGP</span>
+                <span class="indicator" id="changeIndicator">+1%</span>
+            </div>
+            
+            <a href="https://oudaa123.github.io/ele.123/products.html" class="buy-button" target="_blank">
+                <span>🛒</span>
+                اشتري الان
+                <i>←</i>
+            </a>
+        </div>
+        <div class="date-badge" id="currentDate">
+            📅 جاري تحميل التاريخ...
+        </div>
+    </div>
+    
+    <!-- مربع البحث -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="🔍 اكتب اسم المنتج... (بحث فوري)" autocomplete="off">
+        <div class="search-indicator" id="searchIndicator">
+            <span></span>
+        </div>
+    </div>
+    
+    <!-- إحصائيات -->
+    <div class="stats" id="stats">
+        <span>إجمالي المنتجات: <span class="count" id="totalCount">0</span></span>
+        <span id="showingCount" class="search-stats">عرض الكل</span>
+        <span id="yuanUpdateTime" style="color: #1e7b5e; font-size: 0.9em;">آخر تحديث: جاري...</span>
+    </div>
+    
+    <!-- شبكة المنتجات -->
+    <div class="products-grid" id="products"></div>
+    
+    <!-- شريط التحميل -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        جاري تحميل المنتجات...
+    </div>
+</div>
+
+<script>
+// ==================== التكوين الأساسي ====================
+const BASE_YUAN_RATE = 6.99; // السعر الأساسي المرجعي
+
+// روابط APIs
+let sheetURL = "https://script.google.com/macros/s/AKfycbwz89MwrkrwmsK2Uf0xqUtwpPI2JWOfCW8sgMO-Hc0cbQwYvOcOlKYJOCBEmvuuK-OjxA/exec";
+let yuanAPI = "https://script.google.com/macros/s/AKfycbx_CpmcDIoWKQkLjLTHasoNyoJAl6WBdv3g05XInFukBr--HB34lXNZRSoMv49ypUBQKA/exec";
+
+// ==================== المتغيرات العامة ====================
+let allProducts = [];           // جميع المنتجات الخام
+let processedProducts = [];      // المنتجات بعد تطبيق سعر اليوان
+let currentYuanRate = BASE_YUAN_RATE; // سعر اليوان الحالي
+let previousYuanRate = BASE_YUAN_RATE;
+let cachedProducts = null;
+let updateInterval = null;
+
+// عناصر الصفحة
+const productsContainer = document.getElementById('products');
+const searchInput = document.getElementById('searchInput');
+const loadingDiv = document.getElementById('loading');
+const totalCountSpan = document.getElementById('totalCount');
+const showingCountSpan = document.getElementById('showingCount');
+const searchIndicator = document.getElementById('searchIndicator');
+const currentDateSpan = document.getElementById('currentDate');
+const yuanPriceSpan = document.getElementById('yuanPrice');
+const changeIndicator = document.getElementById('changeIndicator');
+const yuanUpdateTimeSpan = document.getElementById('yuanUpdateTime');
+
+// ==================== دوال المساعدة ====================
+
+// تنسيق التاريخ بالعربية
+function getFormattedDate() {
+    const now = new Date();
+    
+    const months = [
+        'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+    ];
+    
+    const days = [
+        'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 
+        'الخميس', 'الجمعة', 'السبت'
+    ];
+    
+    const day = days[now.getDay()];
+    const dayNumber = now.getDate();
+    const month = months[now.getMonth()];
+    const year = now.getFullYear();
+    
+    return `${day} ${dayNumber} ${month} ${year}`;
+}
+
+// عرض التاريخ الحالي
+currentDateSpan.innerHTML = `📅 ${getFormattedDate()}`;
+
+// دالة لتنظيف النص من جميع الرموز (@, &, !, $, ., إلخ)
+function cleanText(text) {
+    if (!text) return '';
+    // إزالة جميع الرموز غير الأحرف والمسافات
+    return text.toString()
+        .replace(/[@&!$._\-+*#]/g, '') // إزالة جميع الرموز
+        .trim();
+}
+
+// دالة لتحديد نوع المنتج ومعالجة السعر
+function processProduct(product) {
+    const special = product.special ? product.special.toString().trim() : '';
+    const price = parseFloat(product.price) || 0;
+    
+    // حالات المعالجة:
+    if (special === '!') {
+        // منتج خاص: زيادة 36.5%
+        return {
+            type: 'special',
+            displayPrice: Math.round(price * 1.365),
+            showOriginal: true,
+            originalPrice: price
+        };
+    } 
+    else if (special === '.') {
+        // منتج بنقط: عرض السعر الأصلي بدون زيادة
+        return {
+            type: 'original',
+            displayPrice: Math.round(price),
+            showOriginal: false,
+            originalPrice: null
+        };
+    }
+    else {
+        // منتج عادي: زيادة 25%
+        return {
+            type: 'normal',
+            displayPrice: Math.round(price * 1.25),
+            showOriginal: false,
+            originalPrice: null
+        };
+    }
+}
+
+/**
+ * حساب سعر اليوان بعد زيادة 1%
+ */
+function getYuanWithMarkup() {
+    return currentYuanRate * 1.01;
+}
+
+/**
+ * حساب سعر المنتج بناءً على سعر اليوان الحالي
+ * @param {number} basePrice - السعر الأساسي في الشيت (على أساس 6.99)
+ * @returns {number} السعر الجديد بعد التعديل
+ */
+function calculatePrice(basePrice) {
+    const yuanWithMarkup = getYuanWithMarkup();
+    const newPrice = basePrice * (yuanWithMarkup / BASE_YUAN_RATE);
+    return Math.round(newPrice); // تقريب لأقرب جنيه
+}
+
+/**
+ * تحديث عرض سعر اليوان في الترويسة
+ */
+function updateYuanDisplay() {
+    const yuanWithMarkup = getYuanWithMarkup();
+    yuanPriceSpan.innerText = yuanWithMarkup.toFixed(2);
+    
+    // حساب نسبة التغيير
+    if (previousYuanRate > 0 && previousYuanRate !== currentYuanRate) {
+        const change = ((currentYuanRate - previousYuanRate) / previousYuanRate * 100).toFixed(1);
+        
+        if (change > 0) {
+            changeIndicator.innerText = `+${change}%`;
+            changeIndicator.style.background = '#27ae6030';
+            changeIndicator.style.color = '#2ecc71';
+        } else if (change < 0) {
+            changeIndicator.innerText = `${change}%`;
+            changeIndicator.style.background = '#e74c3c30';
+            changeIndicator.style.color = '#e74c3c';
+        } else {
+            changeIndicator.innerText = '0%';
+            changeIndicator.style.background = '#f39c1230';
+            changeIndicator.style.color = '#f39c12';
+        }
+    } else {
+        changeIndicator.innerText = '0%';
+        changeIndicator.style.background = '#f39c1230';
+        changeIndicator.style.color = '#f39c12';
+    }
+    
+    // تحديث وقت آخر تحديث
+    const now = new Date();
+    yuanUpdateTimeSpan.innerText = `آخر تحديث: ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+}
+
+// ==================== معالجة المنتجات ====================
+
+/**
+ * معالجة جميع المنتجات بتطبيق سعر اليوان الحالي
+ */
+function processAllProducts() {
+    processedProducts = allProducts.map(product => {
+        const basePrice = parseFloat(product.price) || 0;
+        const calculatedPrice = calculatePrice(basePrice);
+        
+        return {
+            ...product,
+            calculatedPrice: calculatedPrice,
+            basePrice: basePrice
+        };
+    });
+}
+
+/**
+ * عرض المنتجات في الصفحة
+ */
+function displayProducts(productsToShow = processedProducts) {
+    if (productsToShow.length === 0) {
+        productsContainer.innerHTML = '<div class="no-results">🔍 لا توجد منتجات مطابقة للبحث</div>';
+        showingCountSpan.textContent = 'لا توجد نتائج';
+        return;
+    }
+    
+    // استخدام DocumentFragment للسرعة
+    const fragment = document.createDocumentFragment();
+    const template = document.createElement('template');
+    
+    productsToShow.forEach(product => {
+        // تنظيف اسم المنتج من جميع الرموز
+        const cleanName = cleanText(product.name);
+        
+        // معالجة السعر حسب النوع (مع الحفاظ على خاصية special لو موجودة)
+        const priceInfo = processProduct(product);
+        
+        // تحديد الشارة المناسبة بناءً على special
+        let badge = '';
+        if (priceInfo.type === 'special') {
+            badge = '<div class="special-badge">✨ خاص +36.5%</div>';
+        } else if (priceInfo.type === 'original') {
+            badge = '<div class="original-badge">📋 السعر الأصلي</div>';
+        }
+        
+        // السعر الجديد مع مراعاة special
+        let finalPrice;
+        if (priceInfo.type === 'special') {
+            finalPrice = priceInfo.displayPrice;
+        } else if (priceInfo.type === 'original') {
+            finalPrice = priceInfo.displayPrice;
+        } else {
+            // المنتج العادي: يطبق عليه سعر اليوان
+            finalPrice = calculatePrice(parseFloat(product.price) || 0);
+        }
+        
+        // عرض السعر مع السعر الأصلي إذا كان موجود
+        const originalPriceHtml = priceInfo.showOriginal ? 
+            `<span class="original-price">${priceInfo.originalPrice} جنيه</span>` : '';
+        
+        template.innerHTML = `
+            <div class="product-card">
+                ${badge}
+                <div class="product-image">
+                    <img src="${product.image || 'https://via.placeholder.com/300x200?text=لا+توجد+صورة'}" 
+                         alt="${cleanName}"
+                         onerror="this.src='https://via.placeholder.com/300x200?text=صورة+غير+متوفرة'"
+                         loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">${cleanName || 'منتج بدون اسم'}</div>
+                    <div class="product-price">
+                        ${finalPrice} جنيه
+                        ${originalPriceHtml}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        fragment.appendChild(template.content.cloneNode(true));
+    });
+    
+    // تحديث DOM مرة واحدة فقط
+    productsContainer.innerHTML = '';
+    productsContainer.appendChild(fragment);
+    
+    // تحديث الإحصائيات
+    showingCountSpan.textContent = `عرض ${productsToShow.length} منتج`;
+}
+
+// دالة للبحث
+function searchProducts(searchTerm) {
+    if (!searchTerm.trim()) {
+        return processedProducts;
+    }
+    
+    const term = searchTerm.toLowerCase().trim();
+    
+    return processedProducts.filter(product => {
+        const cleanName = cleanText(product.name).toLowerCase();
+        return cleanName.includes(term);
+    });
+}
+
+// تحديث الإحصائيات
+function updateStats() {
+    totalCountSpan.textContent = allProducts.length;
+}
+
+// ==================== جلب البيانات ====================
+
+/**
+ * جلب سعر اليوان من API (الرابط بتاعك)
+ */
+async function fetchYuanRate() {
+    try {
+        // إضافة مؤشر تحميل بسيط
+        yuanPriceSpan.style.opacity = '0.5';
+        searchIndicator.classList.add('active');
+        
+        // جلب السعر من الرابط بتاعك
+        const response = await fetch(yuanAPI);
+        const jsonData = await response.json(); // استخدم json بدلاً من text
+        
+        // استخراج السعر من الكائن
+        const fetchedPrice = parseFloat(jsonData.yuan);
+        
+        // التحقق من صحة القيمة
+        if (!isNaN(fetchedPrice) && fetchedPrice > 0) {
+            // الرابط بيديك السعر بعد إضافة 1% مباشرة (الخلية B2)
+            // إحنا عاوزين السعر الأصلي قبل الزيادة
+            currentYuanRate = fetchedPrice / 1.01;
+            console.log("السعر الأصلي:", currentYuanRate);
+        } else {
+            // إذا فشل الجلب، استخدم القيمة الافتراضية
+            currentYuanRate = BASE_YUAN_RATE;
+            console.warn("استخدام القيمة الافتراضية لسعر اليوان");
+        }
+        
+        // تحديث العرض
+        updateYuanDisplay();
+        yuanPriceSpan.style.opacity = '1';
+        searchIndicator.classList.remove('active');
+        
+        // إعادة حساب وعرض المنتجات
+        if (allProducts.length > 0) {
+            processAllProducts();
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm) {
+                const filtered = searchProducts(searchTerm);
+                displayProducts(filtered);
+            } else {
+                displayProducts();
+            }
+        }
+        
+        previousYuanRate = currentYuanRate;
+        
+    } catch (error) {
+        console.error("خطأ في جلب سعر اليوان:", error);
+        yuanPriceSpan.innerText = "خطأ";
+        yuanPriceSpan.style.opacity = '1';
+        searchIndicator.classList.remove('active');
+        
+        // في حالة الخطأ، استخدم القيمة الافتراضية
+        currentYuanRate = BASE_YUAN_RATE;
+        updateYuanDisplay();
+    }
+}
+
+/**
+ * جلب المنتجات من Google Sheets
+ */
+async function fetchProducts() {
+    // استخدام الكاش إذا كان موجود
+    if (cachedProducts) {
+        allProducts = cachedProducts;
+        updateStats();
+        processAllProducts();
+        displayProducts(allProducts);
+        loadingDiv.style.display = 'none';
+        
+        // جلب سعر اليوان بعد تحميل المنتجات
+        await fetchYuanRate();
+        return;
+    }
+    
+    try {
+        const response = await fetch(sheetURL);
+        const data = await response.json();
+        
+        loadingDiv.style.display = 'none';
+        
+        if (data.error) {
+            productsContainer.innerHTML = `<div class="no-results">❌ ${data.error}</div>`;
+            return;
+        }
+        
+        if (!Array.isArray(data)) {
+            productsContainer.innerHTML = '<div class="no-results">❌ خطأ في البيانات</div>';
+            return;
+        }
+        
+        // تصفية المنتجات
+        allProducts = data.filter(product => {
+            return product.name && 
+                   product.name.trim() !== '' && 
+                   product.price && 
+                   parseFloat(product.price) > 0;
+        }).map(product => ({
+            name: product.name,
+            image: product.image || '',
+            price: parseFloat(product.price) || 0,
+            special: product.special ? product.special.toString().trim() : ''
+        }));
+        
+        // تخزين في الكاش
+        cachedProducts = allProducts;
+        
+        updateStats();
+        processAllProducts();
+        displayProducts(allProducts);
+        
+        // جلب سعر اليوان بعد تحميل المنتجات
+        await fetchYuanRate();
+        
+    } catch(error) {
+        console.error("خطأ:", error);
+        loadingDiv.innerHTML = `
+            <div style="color: #ff4757;">
+                ❌ حدث خطأ<br>
+                <small>${error.message}</small>
+            </div>
+        `;
+    }
+}
+
+// ==================== البحث ====================
+
+// البحث مع debounce
+let searchTimeout;
+const debouncedSearch = debounce((searchTerm) => {
+    const filteredProducts = searchProducts(searchTerm);
+    displayProducts(filteredProducts);
+}, 150);
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// مستمع البحث
+searchInput.addEventListener('input', (e) => {
+    searchIndicator.classList.add('active');
+    debouncedSearch(e.target.value);
+    setTimeout(() => {
+        searchIndicator.classList.remove('active');
+    }, 200);
+});
+
+// Enter للبحث
+searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(searchTimeout);
+        const searchTerm = e.target.value;
+        const filteredProducts = searchProducts(searchTerm);
+        displayProducts(filteredProducts);
+    }
+});
+
+// مسح البحث
+searchInput.addEventListener('search', (e) => {
+    if (!e.target.value) {
+        displayProducts(processedProducts);
+    }
+});
+
+// ==================== بدء التطبيق ====================
+
+// بدء التحميل
+fetchProducts();
+
+// تحديث سعر اليوان كل 60 دقيقة (3600000 مللي ثانية)
+setInterval(fetchYuanRate, 3600000);
+
+// تحديث التاريخ كل دقيقة
+setInterval(() => {
+    currentDateSpan.innerHTML = `📅 ${getFormattedDate()}`;
+}, 60000);
+</script>
+
+</body>
+</html>
