@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>جنة - تطبيق الأسعار</title>
+<title>جنة - تسوق</title>
 <style>
-/* ===== نفس التنسيقات السابقة - احتفظ بها كما هي ===== */
+/* ===== التنسيقات الأساسية ===== */
 * {
     margin: 0;
     padding: 0;
@@ -25,7 +25,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background: linear-gradient(135deg, #0a3b31 0%, #166b52 100%);
+    background: #0a3b31;
     min-height: 100vh;
     min-height: -webkit-fill-available;
     padding: 0;
@@ -53,329 +53,209 @@ html {
     flex-direction: column;
 }
 
-/* ===== الشريط العلوي المثبت ===== */
+/* ===== الشريط العلوي المدمج ===== */
 .sticky-header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: #f8fafc;
-    padding: 12px 16px 8px 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    border-bottom: 1px solid rgba(30, 123, 94, 0.2);
+    background: rgba(248, 250, 252, 0.98);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    background: rgba(248, 250, 252, 0.98);
+    padding: 8px 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(30, 123, 94, 0.1);
 }
 
 @supports (padding-top: constant(safe-area-inset-top)) {
     .sticky-header {
-        padding-top: max(12px, constant(safe-area-inset-top));
-        padding-top: max(12px, env(safe-area-inset-top));
+        padding-top: max(8px, constant(safe-area-inset-top));
+        padding-top: max(8px, env(safe-area-inset-top));
     }
 }
 
-.header {
-    text-align: center;
-    margin-bottom: 12px;
-    position: relative;
-    background: white;
-    padding: 16px 12px;
-    border-radius: 24px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(30, 123, 94, 0.1);
-}
-
-.header-content {
+/* الصف العلوي - العملات وزر الشراء */
+.top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-    flex-direction: row;
+    margin-bottom: 8px;
 }
 
-h2 {
+.logo h2 {
     color: #1e7b5e;
-    font-size: 1.6rem;
-    margin: 0;
-    position: relative;
-    padding-bottom: 0;
-    white-space: nowrap;
+    font-size: 1.4rem;
     font-weight: 800;
     background: linear-gradient(135deg, #1e7b5e, #0f5c45);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-}
-
-/* شاشة سعر اليوان */
-.yuan-display {
-    background: linear-gradient(135deg, #1e7b5e, #0f5c45);
-    border-radius: 30px;
-    padding: 8px 16px;
-    border: 1px solid rgba(212, 175, 55, 0.5);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    font-family: 'Courier New', monospace;
-    direction: ltr;
-    display: inline-flex;
-    align-items: center;
-    margin: 0;
-    flex-shrink: 0;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-}
-
-.yuan-display .price {
-    font-weight: 800;
-    color: #ffd700;
-    font-size: 1.4rem;
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-    margin: 0 4px;
-}
-
-.yuan-display .currency {
-    color: white;
-    font-size: 1rem;
-    margin: 0 4px;
-    font-weight: 500;
-}
-
-.yuan-display .indicator {
-    background: rgba(46, 204, 113, 0.25);
-    color: #2ecc71;
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    margin-left: 8px;
     white-space: nowrap;
-}
-
-/* شاشة سعر الدولار */
-.dollar-display {
-    background: linear-gradient(135deg, #2c3e50, #1e2b3a);
-    border-radius: 30px;
-    padding: 8px 16px;
-    border: 1px solid rgba(52, 152, 219, 0.5);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    font-family: 'Courier New', monospace;
-    direction: ltr;
-    display: inline-flex;
-    align-items: center;
     margin: 0;
-    flex-shrink: 0;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
 }
 
-.dollar-display .price {
-    font-weight: 800;
-    color: #3498db;
-    font-size: 1.4rem;
-    text-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
-    margin: 0 4px;
-}
-
-.dollar-display .currency {
-    color: white;
-    font-size: 1rem;
-    margin: 0 4px;
-    font-weight: 500;
-}
-
-.dollar-display .indicator {
-    background: rgba(46, 204, 113, 0.25);
-    color: #2ecc71;
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    margin-left: 8px;
-    white-space: nowrap;
-}
-
-.currency-row {
+.currency-panel {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: 8px 0;
+    gap: 6px;
+    background: white;
+    padding: 4px;
+    border-radius: 40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
 }
 
-/* زر اشتري الان */
-.buy-button {
-    display: inline-flex;
+.currency-item {
+    display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.currency-item.yuan {
+    background: linear-gradient(135deg, #1e7b5e, #0f5c45);
+    color: white;
+}
+
+.currency-item.dollar {
+    background: linear-gradient(135deg, #2c3e50, #1e2b3a);
+    color: white;
+}
+
+.currency-item .price {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    margin: 0 2px;
+}
+
+.currency-item .indicator {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.buy-mini-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     background: linear-gradient(135deg, #ff4757, #ee3a4a);
     color: white;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 30px;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 700;
     text-decoration: none;
-    box-shadow: 0 6px 16px rgba(255,71,87,0.4);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3);
     white-space: nowrap;
-    flex-shrink: 0;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.buy-button:active {
+.buy-mini-btn:active {
     transform: scale(0.96);
-    box-shadow: 0 2px 8px rgba(255,71,87,0.3);
 }
 
-.buy-button i {
-    font-style: normal;
-    font-size: 1.2rem;
+/* شريط البحث - يظهر عند التمرير */
+.search-bar {
+    transition: all 0.3s ease;
+    margin-top: 0;
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.date-badge {
-    display: inline-block;
-    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-    color: #1e293b;
-    padding: 12px 20px;
-    border-radius: 30px;
-    font-size: 1rem;
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    margin-top: 8px;
-    border: 1px solid #cbd5e1;
-    width: 100%;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-}
-
-/* ===== المحتوى القابل للتمرير ===== */
-.scrollable-content {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 16px;
-    padding-bottom: calc(16px + constant(safe-area-inset-bottom));
-    padding-bottom: calc(16px + env(safe-area-inset-bottom));
-}
-
-/* مربع البحث */
-.search-container {
-    margin-bottom: 16px;
-    display: flex;
-    justify-content: center;
-    position: relative;
-    width: 100%;
+.search-bar.hidden {
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    margin-top: -50px;
 }
 
 #searchInput {
     width: 100%;
-    padding: 16px 20px;
-    padding-left: 50px;
-    font-size: 1rem;
+    padding: 12px 16px;
+    padding-right: 45px;
+    font-size: 0.95rem;
     border: 2px solid #e2e8f0;
     border-radius: 30px;
     outline: none;
-    transition: all 0.2s ease;
     background: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="%231e7b5e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%231e7b5e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
     background-repeat: no-repeat;
     background-position: right 16px center;
-    background-size: 22px;
-    padding-right: 50px;
-    padding-left: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-size: 18px;
 }
 
 #searchInput:focus {
     border-color: #1e7b5e;
-    box-shadow: 0 4px 16px rgba(30, 123, 94, 0.2);
+    box-shadow: 0 0 0 3px rgba(30, 123, 94, 0.1);
 }
 
-/* شبكة المنتجات */
+/* شريط الإحصائيات المصغر */
+.mini-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0 2px;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.mini-stats span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.mini-stats .count {
+    background: #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+    color: #1e7b5e;
+}
+
+/* ===== المحتوى الرئيسي ===== */
+.scrollable-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px;
+    padding-bottom: calc(12px + constant(safe-area-inset-bottom));
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+}
+
+/* شبكة المنتجات - أكبر وأوضح */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    margin-top: 8px;
+    gap: 12px;
+    margin-top: 4px;
 }
 
-/* بطاقة المنتج */
+/* بطاقة المنتج - تصميم أكثر وضوحاً */
 .product-card {
     background: white;
-    border-radius: 24px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
     position: relative;
-    border: 1px solid rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.03);
     display: flex;
     flex-direction: column;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-}
-
-/* تنسيق خاص للمنتجات غير المتوفرة */
-.product-card.out-of-stock {
-    opacity: 0.85;
-    filter: grayscale(0.3);
-    position: relative;
-}
-
-.product-card.out-of-stock::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 5;
-    pointer-events: none;
-}
-
-.product-card.out-of-stock .product-image img {
-    opacity: 0.7;
-}
-
-.out-of-stock-badge {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: linear-gradient(135deg, #ff4757, #ee3a4a);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 40px;
-    font-size: 1rem;
-    font-weight: 800;
-    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.5);
-    z-index: 10;
-    border: 2px solid white;
-    white-space: nowrap;
-    animation: pulse 2s infinite;
-    letter-spacing: 0.5px;
 }
 
 .product-card:active {
-    transform: scale(0.97);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
-
-.product-card.out-of-stock:active {
-    transform: scale(0.97);
+    transform: scale(0.98);
 }
 
 .product-image {
     width: 100%;
     aspect-ratio: 1/1;
     overflow: hidden;
-    position: relative;
     background: #f8fafc;
     display: flex;
     align-items: center;
@@ -387,150 +267,104 @@ h2 {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    transition: transform 0.2s ease;
-}
-
-.product-card:active .product-image img {
-    transform: scale(0.98);
-}
-
-.product-card.out-of-stock:active .product-image img {
-    transform: scale(0.98);
 }
 
 .product-info {
-    padding: 14px 12px 16px;
+    padding: 12px 10px 14px;
     text-align: center;
     background: white;
     border-top: 1px solid #f1f5f9;
-    position: relative;
-    z-index: 2;
-}
-
-.product-card.out-of-stock .product-info {
-    background: #f8fafc;
 }
 
 .product-name {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: #1e293b;
-    margin-bottom: 10px;
-    line-height: 1.4;
-    min-height: 2.8rem;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    min-height: 2.5rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    word-break: break-word;
-}
-
-.product-card.out-of-stock .product-name {
-    color: #64748b;
 }
 
 .product-price {
-    font-size: 1.7rem !important;
+    font-size: 1.5rem !important;
     font-weight: 800 !important;
     color: #1e7b5e !important;
-    margin-bottom: 4px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important;
-    flex-wrap: wrap !important;
-    text-shadow: 0 2px 4px rgba(30, 123, 94, 0.15) !important;
-    letter-spacing: 0.5px !important;
+    line-height: 1.2 !important;
 }
 
-.product-card.out-of-stock .product-price {
-    color: #94a3b8 !important;
-    text-decoration: line-through !important;
-    text-shadow: none !important;
+/* المنتجات غير المتوفرة */
+.product-card.out-of-stock {
+    opacity: 0.8;
+}
+
+.product-card.out-of-stock::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(1px);
+    z-index: 5;
+}
+
+.out-of-stock-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ff4757;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
+    z-index: 10;
+    border: 2px solid white;
+    white-space: nowrap;
 }
 
 .special-badge, .original-badge {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 8px;
+    left: 8px;
     background: linear-gradient(135deg, #d4af37, #b8860b);
     color: white;
-    padding: 6px 14px;
-    border-radius: 30px;
-    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 25px;
+    font-size: 0.75rem;
     font-weight: 700;
-    box-shadow: 0 4px 10px rgba(180, 130, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(180, 130, 0, 0.3);
     z-index: 6;
-    animation: pulse 2s infinite;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
     border: 1px solid rgba(255,255,255,0.3);
 }
 
 .original-badge {
     left: auto;
-    right: 10px;
+    right: 8px;
     background: linear-gradient(135deg, #3498db, #2980b9);
-    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
-}
-
-/* البادجات تظهر فوق طبقة التعمية */
-.product-card.out-of-stock .special-badge,
-.product-card.out-of-stock .original-badge {
-    z-index: 15;
-    opacity: 0.9;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.stats {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding: 14px 18px;
-    background: white;
-    border-radius: 30px;
-    color: #334155;
-    flex-wrap: wrap;
-    gap: 10px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    font-size: 1rem;
-    font-weight: 500;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-}
-
-.count {
-    font-weight: 800;
-    color: #1e7b5e;
-    font-size: 1.3rem;
-    background: #f1f5f9;
-    padding: 4px 12px;
-    border-radius: 40px;
-    margin-right: 6px;
 }
 
 .loading {
     text-align: center;
-    padding: 50px 20px;
-    font-size: 1.2rem;
+    padding: 40px 20px;
     color: #64748b;
 }
 
 .loading-spinner {
-    width: 56px;
-    height: 56px;
-    border: 5px solid #e2e8f0;
-    border-top: 5px solid #1e7b5e;
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e2e8f0;
+    border-top: 3px solid #1e7b5e;
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 20px;
+    animation: spin 0.6s linear infinite;
+    margin: 0 auto 15px;
 }
 
 @keyframes spin {
@@ -541,169 +375,116 @@ h2 {
 .no-results {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 60px 24px;
-    font-size: 1.3rem;
+    padding: 40px 20px;
     color: #64748b;
     background: white;
-    border-radius: 30px;
+    border-radius: 20px;
     border: 2px dashed #cbd5e1;
 }
 
+/* تحسينات للشاشات المختلفة */
 @media (max-width: 380px) {
-    .header-content {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    h2 {
-        font-size: 1.4rem;
-    }
-    .yuan-display .price,
-    .dollar-display .price {
-        font-size: 1.2rem;
-    }
-    .product-price {
-        font-size: 1.5rem !important;
-    }
     .products-grid {
         grid-template-columns: 1fr;
     }
-    .yuan-display, .dollar-display {
-        padding: 6px 12px;
-    }
-    .out-of-stock-badge {
-        font-size: 0.9rem;
-        padding: 6px 12px;
-    }
-}
-
-@media (min-width: 480px) and (max-width: 768px) {
-    .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-    }
+    
     .product-price {
-        font-size: 1.8rem !important;
+        font-size: 1.4rem !important;
+    }
+    
+    .currency-panel {
+        gap: 2px;
+    }
+    
+    .currency-item {
+        padding: 4px 6px;
+        font-size: 0.8rem;
     }
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
-    .sticky-header {
-        padding: 16px 24px 12px 24px;
-    }
-    .scrollable-content {
-        padding: 24px;
-    }
+@media (min-width: 768px) {
     .products-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
+        gap: 16px;
     }
-    h2 {
-        font-size: 2rem;
-    }
-    .yuan-display .price,
-    .dollar-display .price {
-        font-size: 1.6rem;
-    }
-    .product-price {
-        font-size: 2rem !important;
+    
+    .scrollable-content {
+        padding: 16px;
     }
 }
 
 @media (min-width: 1024px) {
     .container {
-        margin: 20px auto;
-        border-radius: 32px;
+        margin: 15px auto;
+        border-radius: 28px;
         min-height: auto;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        max-width: 1200px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
+    
     body {
-        padding: 20px;
+        padding: 15px;
         align-items: center;
     }
-    .sticky-header {
-        border-radius: 32px 32px 0 0;
-        padding: 20px 30px 12px 30px;
-    }
-    .scrollable-content {
-        padding: 30px;
-    }
+    
     .products-grid {
         grid-template-columns: repeat(4, 1fr);
-        gap: 22px;
-    }
-    .product-price {
-        font-size: 2.2rem !important;
-    }
-    .out-of-stock-badge {
-        font-size: 1.1rem;
-        padding: 10px 20px;
+        gap: 18px;
     }
 }
 
+/* إخفاء شريط التمرير */
 .scrollable-content::-webkit-scrollbar {
     width: 0;
     background: transparent;
-}
-
-.product-card, .buy-button, #searchInput {
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.product-card.out-of-stock {
-    cursor: default;
-}
-
-.product-name, .product-price {
-    -webkit-user-select: none;
-    user-select: none;
 }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- الشريط العلوي المثبت -->
+    <!-- الشريط العلوي المدمج -->
     <div class="sticky-header">
-        <div class="header">
-            <div class="header-content">
-                <h2>جميع اسعار جنة تحديث يوميا </h2>
-                <div class="currency-row">
-                    <div class="yuan-display">
-                        <span>🇨🇳</span>
-                        <span class="price" id="yuanPrice">جاري التحميل...</span>
-                        <span class="currency">EGP</span>
-                        <span class="indicator" id="yuanChangeIndicator">0%</span>
-                    </div>
-                    <div class="dollar-display">
-                        <span>🇺🇸</span>
-                        <span class="price" id="dollarPrice">جاري التحميل...</span>
-                        <span class="currency">EGP</span>
-                        <span class="indicator" id="dollarChangeIndicator">0%</span>
-                    </div>
-                </div>
-                <a href="https://oudaa123.github.io/ele.123/products.html" class="buy-button" target="_blank">
-                    <span>🛒</span> اشتري الآن <i>←</i>
-                </a>
+        <!-- الصف العلوي: العملات وزر الشراء -->
+        <div class="top-bar">
+            <div class="logo">
+                <h2>🌿 جنة</h2>
             </div>
-            <div class="date-badge" id="currentDate">📅 جاري تحميل التاريخ...</div>
+            
+            <div class="currency-panel">
+                <div class="currency-item yuan">
+                    <span>🇨🇳</span>
+                    <span class="price" id="yuanPrice">--</span>
+                    <span class="indicator" id="yuanChangeIndicator">0%</span>
+                </div>
+                <div class="currency-item dollar">
+                    <span>🇺🇸</span>
+                    <span class="price" id="dollarPrice">--</span>
+                    <span class="indicator" id="dollarChangeIndicator">0%</span>
+                </div>
+            </div>
+            
+            <a href="https://oudaa123.github.io/ele.123/products.html" class="buy-mini-btn" target="_blank">
+                <span>🛒</span> اشتري
+            </a>
         </div>
         
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="🔍 ابحث عن منتج..." autocomplete="off">
+        <!-- شريط البحث (يظهر/يختفي عند التمرير) -->
+        <div class="search-bar" id="searchBar">
+            <input type="text" id="searchInput" placeholder="ابحث عن منتج..." autocomplete="off">
         </div>
         
-        <div class="stats" id="stats">
-            <span>المنتجات: <span class="count" id="totalCount">0</span></span>
-            <span id="showingCount" class="search-stats">عرض الكل</span>
-            <span id="updateTime" style="color: #1e7b5e;">آخر تحديث: --:--</span>
+        <!-- شريط الإحصائيات المصغر -->
+        <div class="mini-stats">
+            <span>📦 <span class="count" id="totalCount">0</span></span>
+            <span id="showingCount">عرض الكل</span>
+            <span>⏱️ <span id="updateTime">--:--</span></span>
         </div>
     </div>
     
-    <div class="scrollable-content">
+    <!-- المحتوى القابل للتمرير -->
+    <div class="scrollable-content" id="scrollableContent">
         <div class="products-grid" id="products"></div>
-        <div class="loading" id="loading"><div class="loading-spinner"></div>جاري تحميل المنتجات...</div>
+        <div class="loading" id="loading"><div class="loading-spinner"></div>جاري التحميل...</div>
     </div>
 </div>
 
@@ -721,74 +502,72 @@ let currentDollarRate = 0;
 let previousDollarRate = 0;
 let cachedProducts = null;
 let lastUpdateTime = null;
+let lastScrollTop = 0;
 
 // عناصر الصفحة
 const productsContainer = document.getElementById('products');
 const searchInput = document.getElementById('searchInput');
+const searchBar = document.getElementById('searchBar');
+const scrollableContent = document.getElementById('scrollableContent');
 const loadingDiv = document.getElementById('loading');
 const totalCountSpan = document.getElementById('totalCount');
 const showingCountSpan = document.getElementById('showingCount');
-const currentDateSpan = document.getElementById('currentDate');
 const yuanPriceSpan = document.getElementById('yuanPrice');
 const dollarPriceSpan = document.getElementById('dollarPrice');
 const yuanChangeIndicator = document.getElementById('yuanChangeIndicator');
 const dollarChangeIndicator = document.getElementById('dollarChangeIndicator');
 const updateTimeSpan = document.getElementById('updateTime');
 
+// ==================== التحكم في ظهور/اختفاء البحث ====================
+scrollableContent.addEventListener('scroll', () => {
+    const scrollTop = scrollableContent.scrollTop;
+    
+    // إذا نزل للأسفل أكثر من 50px، أخفي البحث
+    if (scrollTop > 50 && lastScrollTop <= 50) {
+        searchBar.classList.add('hidden');
+    }
+    // إذا رجع لفوق، أظهر البحث
+    else if (scrollTop <= 50 && lastScrollTop > 50) {
+        searchBar.classList.remove('hidden');
+    }
+    
+    lastScrollTop = scrollTop;
+});
+
 // ==================== دوال المساعدة ====================
 
-// تنسيق التاريخ
-function getFormattedDate() {
-    const now = new Date();
-    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
-    const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    return `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+// تنسيق التاريخ (استخدام بسيط)
+function updateDateBadge() {
+    // مش محتاجين نعرض التاريخ في الشريط الجديد، هنستخدم الوقت بس
 }
 
-/**
- * دالة لاستخراج الرمز من آخر اسم المنتج
- * مثلاً: "شاحن 123#" => الرمز "#", والاسم النظيف "شاحن 123"
- * "كفر موبايل!#" => الرمز "!#", والاسم النظيف "كفر موبايل"
- */
+// استخراج الرمز من آخر الاسم
 function extractSymbolFromName(fullName) {
     if (!fullName) return { cleanName: '', symbol: '' };
-    
     const nameStr = fullName.toString();
-    
-    // البحث عن آخر رمز في الاسم (# أو ! أو .)
-    const match = nameStr.match(/[#!.]$/); // الرمز يكون في آخر النص
-    
+    const match = nameStr.match(/[#!.]$/);
     if (match) {
-        const symbol = match[0]; // الرمز المستخرج
-        // إزالة الرمز من آخر الاسم
+        const symbol = match[0];
         const cleanName = nameStr.slice(0, -1).trim();
         return { cleanName, symbol };
     }
-    
-    // لو مفيش رمز في الآخر
     return { cleanName: nameStr.trim(), symbol: '' };
 }
 
-/**
- * دالة لمعالجة المنتج بناءً على الرمز المستخرج من اسمه
- */
+// معالجة المنتج
 function processProduct(product) {
-    // استخراج الاسم النظيف والرمز
     const { cleanName, symbol } = extractSymbolFromName(product.name);
     const originalPrice = parseFloat(product.price) || 0;
     
-    // المنتجات التي رمزها '#': غير متوفرة
     if (symbol === '#') {
         return {
             ...product,
-            displayName: cleanName, // الاسم بدون الرمز
+            displayName: cleanName,
             finalPrice: Math.round(originalPrice),
             productType: 'out-of-stock',
             isAvailable: false
         };
     }
-    // المنتجات التي رمزها '!': خاصة (بدون زيادة)
     else if (symbol === '!') {
         return {
             ...product,
@@ -798,7 +577,6 @@ function processProduct(product) {
             isAvailable: true
         };
     }
-    // المنتجات التي رمزها '.': أصلية (بدون زيادة)
     else if (symbol === '.') {
         return {
             ...product,
@@ -808,7 +586,6 @@ function processProduct(product) {
             isAvailable: true
         };
     }
-    // باقي المنتجات: عادية + 15%
     else {
         const priceWithMarkup = originalPrice * 1.15;
         return {
@@ -823,72 +600,45 @@ function processProduct(product) {
 
 // تحديث عرض العملات
 function updateCurrencyDisplays() {
-    yuanPriceSpan.innerText = currentYuanRate.toFixed(2);
+    yuanPriceSpan.innerText = currentYuanRate ? currentYuanRate.toFixed(2) : '--';
+    dollarPriceSpan.innerText = currentDollarRate ? currentDollarRate.toFixed(2) : '--';
     
+    // تحديث مؤشرات التغير
     if (previousYuanRate > 0 && previousYuanRate !== currentYuanRate) {
         const change = ((currentYuanRate - previousYuanRate) / previousYuanRate * 100).toFixed(1);
-        if (change > 0) {
-            yuanChangeIndicator.innerText = `↑+${change}%`;
-            yuanChangeIndicator.style.background = '#27ae6030';
-            yuanChangeIndicator.style.color = '#2ecc71';
-        } else if (change < 0) {
-            yuanChangeIndicator.innerText = `↓${change}%`;
-            yuanChangeIndicator.style.background = '#e74c3c30';
-            yuanChangeIndicator.style.color = '#e74c3c';
-        } else {
-            yuanChangeIndicator.innerText = '0%';
-            yuanChangeIndicator.style.background = '#f39c1230';
-            yuanChangeIndicator.style.color = '#f39c12';
-        }
+        yuanChangeIndicator.innerText = change > 0 ? `+${change}%` : `${change}%`;
+        yuanChangeIndicator.style.background = change > 0 ? '#27ae6030' : '#e74c3c30';
+        yuanChangeIndicator.style.color = change > 0 ? '#2ecc71' : '#e74c3c';
     } else {
         yuanChangeIndicator.innerText = '0%';
-        yuanChangeIndicator.style.background = '#f39c1230';
-        yuanChangeIndicator.style.color = '#f39c12';
     }
-    
-    dollarPriceSpan.innerText = currentDollarRate.toFixed(2);
     
     if (previousDollarRate > 0 && previousDollarRate !== currentDollarRate) {
         const change = ((currentDollarRate - previousDollarRate) / previousDollarRate * 100).toFixed(1);
-        if (change > 0) {
-            dollarChangeIndicator.innerText = `↑+${change}%`;
-            dollarChangeIndicator.style.background = '#27ae6030';
-            dollarChangeIndicator.style.color = '#2ecc71';
-        } else if (change < 0) {
-            dollarChangeIndicator.innerText = `↓${change}%`;
-            dollarChangeIndicator.style.background = '#e74c3c30';
-            dollarChangeIndicator.style.color = '#e74c3c';
-        } else {
-            dollarChangeIndicator.innerText = '0%';
-            dollarChangeIndicator.style.background = '#f39c1230';
-            dollarChangeIndicator.style.color = '#f39c12';
-        }
+        dollarChangeIndicator.innerText = change > 0 ? `+${change}%` : `${change}%`;
+        dollarChangeIndicator.style.background = change > 0 ? '#27ae6030' : '#e74c3c30';
+        dollarChangeIndicator.style.color = change > 0 ? '#2ecc71' : '#e74c3c';
     } else {
         dollarChangeIndicator.innerText = '0%';
-        dollarChangeIndicator.style.background = '#f39c1230';
-        dollarChangeIndicator.style.color = '#f39c12';
     }
     
     if (lastUpdateTime) {
         const hours = lastUpdateTime.getHours().toString().padStart(2, '0');
         const minutes = lastUpdateTime.getMinutes().toString().padStart(2, '0');
-        updateTimeSpan.innerText = `آخر تحديث: ${hours}:${minutes}`;
+        updateTimeSpan.innerText = `${hours}:${minutes}`;
     }
 }
 
-// معالجة كل المنتجات وعكس الترتيب
+// معالجة كل المنتجات
 function processAllProducts() {
-    // عكس الترتيب (الجديد في الأعلى)
     const reversedProducts = [...allProducts].reverse();
-    
-    // تطبيق المعالجة على كل منتج
     processedProducts = reversedProducts.map(product => processProduct(product));
 }
 
 // عرض المنتجات
 function displayProducts(productsToShow = processedProducts) {
     if (productsToShow.length === 0) {
-        productsContainer.innerHTML = '<div class="no-results">🔍 لا توجد منتجات مطابقة</div>';
+        productsContainer.innerHTML = '<div class="no-results">🔍 لا توجد منتجات</div>';
         showingCountSpan.textContent = 'لا توجد نتائج';
         return;
     }
@@ -897,7 +647,6 @@ function displayProducts(productsToShow = processedProducts) {
     const template = document.createElement('template');
     
     productsToShow.forEach(product => {
-        // استخدام displayName بدلاً من الاسم الأصلي
         const cleanName = product.displayName || 'منتج';
         
         let badge = '';
@@ -908,7 +657,7 @@ function displayProducts(productsToShow = processedProducts) {
         }
         
         const outOfStockBadge = !product.isAvailable ? 
-            '<div class="out-of-stock-badge">❌ نفذ من المخزون</div>' : '';
+            '<div class="out-of-stock-badge">❌ غير متوفر</div>' : '';
         
         const outOfStockClass = !product.isAvailable ? 'out-of-stock' : '';
         
@@ -939,10 +688,10 @@ function displayProducts(productsToShow = processedProducts) {
     
     const availableCount = productsToShow.filter(p => p.isAvailable).length;
     const unavailableCount = productsToShow.length - availableCount;
-    showingCountSpan.textContent = `عرض ${productsToShow.length} (متوفر ${availableCount} - غير متوفر ${unavailableCount})`;
+    showingCountSpan.textContent = `عرض ${productsToShow.length} (متوفر ${availableCount})`;
 }
 
-// البحث في المنتجات
+// البحث
 function searchProducts(searchTerm) {
     if (!searchTerm.trim()) return processedProducts;
     const term = searchTerm.toLowerCase().trim();
@@ -958,19 +707,12 @@ function updateStats() {
 
 // ==================== جلب البيانات ====================
 
-// جلب أسعار العملات
 async function fetchCurrencyRates() {
     try {
-        yuanPriceSpan.style.opacity = '0.5';
-        dollarPriceSpan.style.opacity = '0.5';
-        
         const response = await fetch(CURRENCY_API_URL);
         const jsonData = await response.json();
         
-        console.log("بيانات العملات:", jsonData);
-        
         let yuanRate = 0, dollarRate = 0;
-        
         if (jsonData.cny) yuanRate = parseFloat(jsonData.cny);
         else if (jsonData.yuan) yuanRate = parseFloat(jsonData.yuan);
         
@@ -986,9 +728,6 @@ async function fetchCurrencyRates() {
         lastUpdateTime = new Date();
         updateCurrencyDisplays();
         
-        yuanPriceSpan.style.opacity = '1';
-        dollarPriceSpan.style.opacity = '1';
-        
         if (allProducts.length > 0) {
             processAllProducts();
             const searchTerm = searchInput.value.trim();
@@ -996,15 +735,12 @@ async function fetchCurrencyRates() {
         }
         
     } catch (error) {
-        console.error("خطأ في جلب أسعار العملات:", error);
-        yuanPriceSpan.innerText = "خطأ";
-        dollarPriceSpan.innerText = "خطأ";
-        yuanPriceSpan.style.opacity = '1';
-        dollarPriceSpan.style.opacity = '1';
+        console.error("خطأ في جلب العملات:", error);
+        yuanPriceSpan.innerText = '--';
+        dollarPriceSpan.innerText = '--';
     }
 }
 
-// جلب المنتجات
 async function fetchProducts() {
     if (cachedProducts) {
         allProducts = cachedProducts;
@@ -1022,26 +758,18 @@ async function fetchProducts() {
         
         loadingDiv.style.display = 'none';
         
-        if (data.error) {
-            productsContainer.innerHTML = `<div class="no-results">❌ ${data.error}</div>`;
-            return;
-        }
-        
-        if (!Array.isArray(data)) {
-            productsContainer.innerHTML = '<div class="no-results">❌ خطأ في البيانات</div>';
+        if (data.error || !Array.isArray(data)) {
+            productsContainer.innerHTML = '<div class="no-results">❌ خطأ في تحميل المنتجات</div>';
             return;
         }
         
         allProducts = data.filter(product => {
-            return product.name && 
-                   product.name.trim() !== '' && 
-                   product.price && 
-                   parseFloat(product.price) > 0;
+            return product.name && product.name.trim() !== '' && 
+                   product.price && parseFloat(product.price) > 0;
         }).map(product => ({
-            name: product.name, // الاسم كامل مع الرمز
+            name: product.name,
             image: product.image || '',
             price: parseFloat(product.price) || 0
-            // ملاحظة: لم نعد نستخدم product.special لأن الرمز أصبح في الاسم
         }));
         
         cachedProducts = allProducts;
@@ -1052,7 +780,7 @@ async function fetchProducts() {
         
     } catch(error) {
         console.error("خطأ:", error);
-        loadingDiv.innerHTML = `<div style="color: #ff4757;">❌ حدث خطأ<br><small>${error.message}</small></div>`;
+        loadingDiv.innerHTML = `<div style="color: #ff4757;">❌ حدث خطأ</div>`;
     }
 }
 
@@ -1067,13 +795,10 @@ searchInput.addEventListener('input', (e) => {
     }, 300);
 });
 
-setInterval(() => {
-    currentDateSpan.innerHTML = `📅 ${getFormattedDate()}`;
-}, 60000);
-
-currentDateSpan.innerHTML = `📅 ${getFormattedDate()}`;
+// بدء التطبيق
 fetchProducts();
 
+// تحديث الأسعار كل 60 دقيقة
 setInterval(fetchCurrencyRates, 3600000);
 </script>
 
