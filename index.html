@@ -2,16 +2,27 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>جنة - عرض الأسعار (تحديث تلقائي)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>جنة - تطبيق الأسعار</title>
 <style>
-/* نفس التنسيقات السابقة - احتفظ بها كما هي */
+/* ===== نفس التنسيقات السابقة - احتفظ بها كما هي ===== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
+
+@supports (-webkit-touch-callout: none) {
+    body, .container {
+        padding-bottom: constant(safe-area-inset-bottom);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: linear-gradient(135deg, #0a3b31 0%, #166b52 100%);
@@ -23,61 +34,98 @@ body {
     align-items: flex-start;
     justify-content: center;
 }
+
 html {
     height: -webkit-fill-available;
 }
+
 .container {
     width: 100%;
     max-width: 1200px;
     margin: 0;
     background: #f8fafc;
     border-radius: 0;
-    padding: 16px;
+    padding: 0;
     box-shadow: none;
     min-height: 100vh;
     min-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
 }
+
+/* ===== الشريط العلوي المثبت ===== */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #f8fafc;
+    padding: 12px 16px 8px 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(30, 123, 94, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(248, 250, 252, 0.98);
+}
+
+@supports (padding-top: constant(safe-area-inset-top)) {
+    .sticky-header {
+        padding-top: max(12px, constant(safe-area-inset-top));
+        padding-top: max(12px, env(safe-area-inset-top));
+    }
+}
+
 .header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     position: relative;
     background: white;
     padding: 16px 12px;
     border-radius: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(30, 123, 94, 0.1);
 }
+
 .header-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     flex-direction: row;
 }
+
 h2 {
     color: #1e7b5e;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     margin: 0;
     position: relative;
     padding-bottom: 0;
     white-space: nowrap;
-    font-weight: 700;
+    font-weight: 800;
+    background: linear-gradient(135deg, #1e7b5e, #0f5c45);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
+
 /* شاشة سعر اليوان */
 .yuan-display {
     background: linear-gradient(135deg, #1e7b5e, #0f5c45);
-    border-radius: 40px;
+    border-radius: 30px;
     padding: 8px 16px;
     border: 1px solid rgba(212, 175, 55, 0.5);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     font-family: 'Courier New', monospace;
     direction: ltr;
     display: inline-flex;
     align-items: center;
     margin: 0;
     flex-shrink: 0;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
+
 .yuan-display .price {
     font-weight: 800;
     color: #ffd700;
@@ -85,12 +133,14 @@ h2 {
     text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
     margin: 0 4px;
 }
+
 .yuan-display .currency {
     color: white;
     font-size: 1rem;
     margin: 0 4px;
     font-weight: 500;
 }
+
 .yuan-display .indicator {
     background: rgba(46, 204, 113, 0.25);
     color: #2ecc71;
@@ -101,20 +151,24 @@ h2 {
     margin-left: 8px;
     white-space: nowrap;
 }
+
 /* شاشة سعر الدولار */
 .dollar-display {
     background: linear-gradient(135deg, #2c3e50, #1e2b3a);
-    border-radius: 40px;
+    border-radius: 30px;
     padding: 8px 16px;
     border: 1px solid rgba(52, 152, 219, 0.5);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     font-family: 'Courier New', monospace;
     direction: ltr;
     display: inline-flex;
     align-items: center;
     margin: 0;
     flex-shrink: 0;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
+
 .dollar-display .price {
     font-weight: 800;
     color: #3498db;
@@ -122,12 +176,14 @@ h2 {
     text-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
     margin: 0 4px;
 }
+
 .dollar-display .currency {
     color: white;
     font-size: 1rem;
     margin: 0 4px;
     font-weight: 500;
 }
+
 .dollar-display .indicator {
     background: rgba(46, 204, 113, 0.25);
     color: #2ecc71;
@@ -138,63 +194,89 @@ h2 {
     margin-left: 8px;
     white-space: nowrap;
 }
+
 .currency-row {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
-    margin: 10px 0;
+    margin: 8px 0;
 }
+
 /* زر اشتري الان */
 .buy-button {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     background: linear-gradient(135deg, #ff4757, #ee3a4a);
     color: white;
-    padding: 8px 16px;
-    border-radius: 40px;
-    font-size: 1rem;
-    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
     text-decoration: none;
-    box-shadow: 0 4px 12px rgba(255,71,87,0.4);
-    transition: all 0.2s ease;
-    border: none;
+    box-shadow: 0 6px 16px rgba(255,71,87,0.4);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255,255,255,0.2);
     white-space: nowrap;
     flex-shrink: 0;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
+
 .buy-button:active {
-    transform: scale(0.97);
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(255,71,87,0.3);
 }
+
+.buy-button i {
+    font-style: normal;
+    font-size: 1.2rem;
+}
+
 .date-badge {
     display: inline-block;
     background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
     color: #1e293b;
     padding: 12px 20px;
-    border-radius: 40px;
-    font-size: 1.1rem;
+    border-radius: 30px;
+    font-size: 1rem;
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     margin-top: 8px;
     border: 1px solid #cbd5e1;
     width: 100%;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
+
+/* ===== المحتوى القابل للتمرير ===== */
+.scrollable-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+    padding-bottom: calc(16px + constant(safe-area-inset-bottom));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+}
+
 /* مربع البحث */
 .search-container {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     display: flex;
     justify-content: center;
     position: relative;
     width: 100%;
 }
+
 #searchInput {
     width: 100%;
-    padding: 18px 20px;
+    padding: 16px 20px;
     padding-left: 50px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     border: 2px solid #e2e8f0;
-    border-radius: 40px;
+    border-radius: 30px;
     outline: none;
     transition: all 0.2s ease;
     background: white;
@@ -205,30 +287,90 @@ h2 {
     background-size: 22px;
     padding-right: 50px;
     padding-left: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
+#searchInput:focus {
+    border-color: #1e7b5e;
+    box-shadow: 0 4px 16px rgba(30, 123, 94, 0.2);
+}
+
 /* شبكة المنتجات */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
-    margin-top: 16px;
+    margin-top: 8px;
 }
+
 /* بطاقة المنتج */
 .product-card {
     background: white;
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    border: 1px solid #f0f0f0;
+    border: 1px solid rgba(0,0,0,0.05);
     display: flex;
     flex-direction: column;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
+
+/* تنسيق خاص للمنتجات غير المتوفرة */
+.product-card.out-of-stock {
+    opacity: 0.85;
+    filter: grayscale(0.3);
+    position: relative;
+}
+
+.product-card.out-of-stock::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 5;
+    pointer-events: none;
+}
+
+.product-card.out-of-stock .product-image img {
+    opacity: 0.7;
+}
+
+.out-of-stock-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #ff4757, #ee3a4a);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.5);
+    z-index: 10;
+    border: 2px solid white;
+    white-space: nowrap;
+    animation: pulse 2s infinite;
+    letter-spacing: 0.5px;
+}
+
 .product-card:active {
-    transform: scale(0.98);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: scale(0.97);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
+
+.product-card.out-of-stock:active {
+    transform: scale(0.97);
+}
+
 .product-image {
     width: 100%;
     aspect-ratio: 1/1;
@@ -238,19 +380,37 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px;
+    padding: 16px;
 }
+
 .product-image img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    transition: transform 0.2s ease;
 }
+
+.product-card:active .product-image img {
+    transform: scale(0.98);
+}
+
+.product-card.out-of-stock:active .product-image img {
+    transform: scale(0.98);
+}
+
 .product-info {
     padding: 14px 12px 16px;
     text-align: center;
     background: white;
     border-top: 1px solid #f1f5f9;
+    position: relative;
+    z-index: 2;
 }
+
+.product-card.out-of-stock .product-info {
+    background: #f8fafc;
+}
+
 .product-name {
     font-size: 1rem;
     font-weight: 600;
@@ -264,6 +424,11 @@ h2 {
     overflow: hidden;
     word-break: break-word;
 }
+
+.product-card.out-of-stock .product-name {
+    color: #64748b;
+}
+
 .product-price {
     font-size: 1.7rem !important;
     font-weight: 800 !important;
@@ -274,10 +439,16 @@ h2 {
     justify-content: center !important;
     gap: 8px !important;
     flex-wrap: wrap !important;
-    text-shadow: 0 2px 4px rgba(30, 123, 94, 0.2) !important;
+    text-shadow: 0 2px 4px rgba(30, 123, 94, 0.15) !important;
     letter-spacing: 0.5px !important;
 }
-/* تم إزالة تنسيق original-price لأننا لن نستخدمه */
+
+.product-card.out-of-stock .product-price {
+    color: #94a3b8 !important;
+    text-decoration: line-through !important;
+    text-shadow: none !important;
+}
+
 .special-badge, .original-badge {
     position: absolute;
     top: 10px;
@@ -288,22 +459,40 @@ h2 {
     border-radius: 30px;
     font-size: 0.85rem;
     font-weight: 700;
-    box-shadow: 0 4px 10px rgba(180, 130, 0, 0.4);
-    z-index: 1;
+    box-shadow: 0 4px 10px rgba(180, 130, 0, 0.3);
+    z-index: 6;
     animation: pulse 2s infinite;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.3);
 }
+
 .original-badge {
     left: auto;
     right: 10px;
     background: linear-gradient(135deg, #3498db, #2980b9);
-    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.4);
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
 }
+
+/* البادجات تظهر فوق طبقة التعمية */
+.product-card.out-of-stock .special-badge,
+.product-card.out-of-stock .original-badge {
+    z-index: 15;
+    opacity: 0.9;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
 .stats {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
-    padding: 16px 18px;
+    padding: 14px 18px;
     background: white;
     border-radius: 30px;
     color: #334155;
@@ -313,22 +502,27 @@ h2 {
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     font-size: 1rem;
     font-weight: 500;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
+
 .count {
     font-weight: 800;
     color: #1e7b5e;
     font-size: 1.3rem;
     background: #f1f5f9;
-    padding: 6px 14px;
+    padding: 4px 12px;
     border-radius: 40px;
     margin-right: 6px;
 }
+
 .loading {
     text-align: center;
     padding: 50px 20px;
     font-size: 1.2rem;
     color: #64748b;
 }
+
 .loading-spinner {
     width: 56px;
     height: 56px;
@@ -338,6 +532,12 @@ h2 {
     animation: spin 0.8s linear infinite;
     margin: 0 auto 20px;
 }
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .no-results {
     grid-column: 1 / -1;
     text-align: center;
@@ -348,6 +548,7 @@ h2 {
     border-radius: 30px;
     border: 2px dashed #cbd5e1;
 }
+
 @media (max-width: 380px) {
     .header-content {
         flex-wrap: wrap;
@@ -366,17 +567,30 @@ h2 {
     .products-grid {
         grid-template-columns: 1fr;
     }
+    .yuan-display, .dollar-display {
+        padding: 6px 12px;
+    }
+    .out-of-stock-badge {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
 }
+
 @media (min-width: 480px) and (max-width: 768px) {
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
     }
     .product-price {
         font-size: 1.8rem !important;
     }
 }
+
 @media (min-width: 768px) and (max-width: 1024px) {
-    .container {
+    .sticky-header {
+        padding: 16px 24px 12px 24px;
+    }
+    .scrollable-content {
         padding: 24px;
     }
     .products-grid {
@@ -394,17 +608,25 @@ h2 {
         font-size: 2rem !important;
     }
 }
+
 @media (min-width: 1024px) {
     .container {
         margin: 20px auto;
         border-radius: 32px;
         min-height: auto;
         box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        padding: 30px;
+        max-width: 1200px;
     }
     body {
         padding: 20px;
         align-items: center;
+    }
+    .sticky-header {
+        border-radius: 32px 32px 0 0;
+        padding: 20px 30px 12px 30px;
+    }
+    .scrollable-content {
+        padding: 30px;
     }
     .products-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -413,53 +635,80 @@ h2 {
     .product-price {
         font-size: 2.2rem !important;
     }
+    .out-of-stock-badge {
+        font-size: 1.1rem;
+        padding: 10px 20px;
+    }
+}
+
+.scrollable-content::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+.product-card, .buy-button, #searchInput {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.product-card.out-of-stock {
+    cursor: default;
+}
+
+.product-name, .product-price {
+    -webkit-user-select: none;
+    user-select: none;
 }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <div class="header-content">
-            <h2>🌿 جنة</h2>
-            <div class="currency-row">
-                <div class="yuan-display">
-                    <span>🇨🇳</span>
-                    <span class="price" id="yuanPrice">جاري التحميل...</span>
-                    <span class="currency">EGP</span>
-                    <span class="indicator" id="yuanChangeIndicator">0%</span>
+    <!-- الشريط العلوي المثبت -->
+    <div class="sticky-header">
+        <div class="header">
+            <div class="header-content">
+                <h2>جميع اسعار جنة تحديث يوميا </h2>
+                <div class="currency-row">
+                    <div class="yuan-display">
+                        <span>🇨🇳</span>
+                        <span class="price" id="yuanPrice">جاري التحميل...</span>
+                        <span class="currency">EGP</span>
+                        <span class="indicator" id="yuanChangeIndicator">0%</span>
+                    </div>
+                    <div class="dollar-display">
+                        <span>🇺🇸</span>
+                        <span class="price" id="dollarPrice">جاري التحميل...</span>
+                        <span class="currency">EGP</span>
+                        <span class="indicator" id="dollarChangeIndicator">0%</span>
+                    </div>
                 </div>
-                <div class="dollar-display">
-                    <span>🇺🇸</span>
-                    <span class="price" id="dollarPrice">جاري التحميل...</span>
-                    <span class="currency">EGP</span>
-                    <span class="indicator" id="dollarChangeIndicator">0%</span>
-                </div>
+                <a href="https://oudaa123.github.io/ele.123/products.html" class="buy-button" target="_blank">
+                    <span>🛒</span> اشتري الآن <i>←</i>
+                </a>
             </div>
-            <a href="https://oudaa123.github.io/ele.123/products.html" class="buy-button" target="_blank">
-                <span>🛒</span> اشتري <i>←</i>
-            </a>
+            <div class="date-badge" id="currentDate">📅 جاري تحميل التاريخ...</div>
         </div>
-        <div class="date-badge" id="currentDate">📅 جاري تحميل التاريخ...</div>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="🔍 ابحث عن منتج..." autocomplete="off">
+        </div>
+        
+        <div class="stats" id="stats">
+            <span>المنتجات: <span class="count" id="totalCount">0</span></span>
+            <span id="showingCount" class="search-stats">عرض الكل</span>
+            <span id="updateTime" style="color: #1e7b5e;">آخر تحديث: --:--</span>
+        </div>
     </div>
     
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="🔍 ابحث عن منتج..." autocomplete="off">
+    <div class="scrollable-content">
+        <div class="products-grid" id="products"></div>
+        <div class="loading" id="loading"><div class="loading-spinner"></div>جاري تحميل المنتجات...</div>
     </div>
-    
-    <div class="stats" id="stats">
-        <span>المنتجات: <span class="count" id="totalCount">0</span></span>
-        <span id="showingCount" class="search-stats">عرض الكل</span>
-        <span id="updateTime" style="color: #1e7b5e;">آخر تحديث: --:--</span>
-    </div>
-    
-    <div class="products-grid" id="products"></div>
-    <div class="loading" id="loading"><div class="loading-spinner"></div>جاري تحميل المنتجات...</div>
 </div>
 
 <script>
 // ==================== التكوين الأساسي ====================
-// رابط العملات الجديد الذي أرسلته
 const CURRENCY_API_URL = "https://script.google.com/macros/s/AKfycbywWhhwNF0nBUCaE1-6HZ7GYsWyjDh8GhuOVLEz8IaYs4LwDtBioEnTbpiWUuc6p-4vyg/exec";
 const PRODUCTS_API_URL = "https://script.google.com/macros/s/AKfycbwz89MwrkrwmsK2Uf0xqUtwpPI2JWOfCW8sgMO-Hc0cbQwYvOcOlKYJOCBEmvuuK-OjxA/exec";
 
@@ -497,41 +746,83 @@ function getFormattedDate() {
     return `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 }
 
-// تنظيف النص
-function cleanText(text) {
-    if (!text) return '';
-    return text.toString().replace(/[@&!$._\-+*#]/g, '').trim();
+/**
+ * دالة لاستخراج الرمز من آخر اسم المنتج
+ * مثلاً: "شاحن 123#" => الرمز "#", والاسم النظيف "شاحن 123"
+ * "كفر موبايل!#" => الرمز "!#", والاسم النظيف "كفر موبايل"
+ */
+function extractSymbolFromName(fullName) {
+    if (!fullName) return { cleanName: '', symbol: '' };
+    
+    const nameStr = fullName.toString();
+    
+    // البحث عن آخر رمز في الاسم (# أو ! أو .)
+    const match = nameStr.match(/[#!.]$/); // الرمز يكون في آخر النص
+    
+    if (match) {
+        const symbol = match[0]; // الرمز المستخرج
+        // إزالة الرمز من آخر الاسم
+        const cleanName = nameStr.slice(0, -1).trim();
+        return { cleanName, symbol };
+    }
+    
+    // لو مفيش رمز في الآخر
+    return { cleanName: nameStr.trim(), symbol: '' };
 }
 
 /**
- * دالة لمعالجة المنتج وحساب السعر النهائي فقط
- * بدون إظهار السعر الأصلي
+ * دالة لمعالجة المنتج بناءً على الرمز المستخرج من اسمه
  */
 function processProduct(product) {
-    const special = product.special ? product.special.toString().trim() : '';
+    // استخراج الاسم النظيف والرمز
+    const { cleanName, symbol } = extractSymbolFromName(product.name);
     const originalPrice = parseFloat(product.price) || 0;
     
-    // المنتجات التي بجانبها '.' أو '!' لا يضاف عليها 15%
-    if (special === '.' || special === '!') {
+    // المنتجات التي رمزها '#': غير متوفرة
+    if (symbol === '#') {
         return {
-            type: special === '.' ? 'original' : 'special',
-            finalPrice: Math.round(originalPrice) // تقريب السعر الأصلي فقط
-            // تم إزالة showOriginal و originalPrice بالكامل
+            ...product,
+            displayName: cleanName, // الاسم بدون الرمز
+            finalPrice: Math.round(originalPrice),
+            productType: 'out-of-stock',
+            isAvailable: false
         };
-    } else {
-        // باقي المنتجات: نضيف 15%
+    }
+    // المنتجات التي رمزها '!': خاصة (بدون زيادة)
+    else if (symbol === '!') {
+        return {
+            ...product,
+            displayName: cleanName,
+            finalPrice: Math.round(originalPrice),
+            productType: 'special',
+            isAvailable: true
+        };
+    }
+    // المنتجات التي رمزها '.': أصلية (بدون زيادة)
+    else if (symbol === '.') {
+        return {
+            ...product,
+            displayName: cleanName,
+            finalPrice: Math.round(originalPrice),
+            productType: 'original',
+            isAvailable: true
+        };
+    }
+    // باقي المنتجات: عادية + 15%
+    else {
         const priceWithMarkup = originalPrice * 1.15;
         return {
-            type: 'normal',
-            finalPrice: Math.round(priceWithMarkup) // تقريب السعر بعد الزيادة فقط
-            // تم إزالة showOriginal و originalPrice بالكامل
+            ...product,
+            displayName: cleanName,
+            finalPrice: Math.round(priceWithMarkup),
+            productType: 'normal',
+            isAvailable: true
         };
     }
 }
 
 // تحديث عرض العملات
 function updateCurrencyDisplays() {
-    // تحديث سعر اليوان
     yuanPriceSpan.innerText = currentYuanRate.toFixed(2);
     
     if (previousYuanRate > 0 && previousYuanRate !== currentYuanRate) {
@@ -555,7 +846,6 @@ function updateCurrencyDisplays() {
         yuanChangeIndicator.style.color = '#f39c12';
     }
     
-    // تحديث سعر الدولار
     dollarPriceSpan.innerText = currentDollarRate.toFixed(2);
     
     if (previousDollarRate > 0 && previousDollarRate !== currentDollarRate) {
@@ -579,7 +869,6 @@ function updateCurrencyDisplays() {
         dollarChangeIndicator.style.color = '#f39c12';
     }
     
-    // تحديث وقت آخر تحديث
     if (lastUpdateTime) {
         const hours = lastUpdateTime.getHours().toString().padStart(2, '0');
         const minutes = lastUpdateTime.getMinutes().toString().padStart(2, '0');
@@ -587,21 +876,13 @@ function updateCurrencyDisplays() {
     }
 }
 
-// معالجة كل المنتجات وعكس الترتيب (الجديد في الأعلى)
+// معالجة كل المنتجات وعكس الترتيب
 function processAllProducts() {
-    // أولاً: نعكس ترتيب المنتجات بحيث يكون الجديد (آخر عنصر في الشيت) في البداية
+    // عكس الترتيب (الجديد في الأعلى)
     const reversedProducts = [...allProducts].reverse();
     
-    // ثانياً: نطبق معالجة الأسعار على المنتجات المعكوسة
-    processedProducts = reversedProducts.map(product => {
-        const priceInfo = processProduct(product);
-        return { 
-            ...product, 
-            finalPrice: priceInfo.finalPrice,
-            productType: priceInfo.type
-            // تم إزالة showOriginal و originalPrice
-        };
-    });
+    // تطبيق المعالجة على كل منتج
+    processedProducts = reversedProducts.map(product => processProduct(product));
 }
 
 // عرض المنتجات
@@ -616,7 +897,8 @@ function displayProducts(productsToShow = processedProducts) {
     const template = document.createElement('template');
     
     productsToShow.forEach(product => {
-        const cleanName = cleanText(product.name);
+        // استخدام displayName بدلاً من الاسم الأصلي
+        const cleanName = product.displayName || 'منتج';
         
         let badge = '';
         if (product.productType === 'special') {
@@ -625,11 +907,15 @@ function displayProducts(productsToShow = processedProducts) {
             badge = '<div class="original-badge">📋 أصلي</div>';
         }
         
-        // تم إزالة originalPriceHtml بالكامل
+        const outOfStockBadge = !product.isAvailable ? 
+            '<div class="out-of-stock-badge">❌ نفذ من المخزون</div>' : '';
+        
+        const outOfStockClass = !product.isAvailable ? 'out-of-stock' : '';
         
         template.innerHTML = `
-            <div class="product-card">
+            <div class="product-card ${outOfStockClass}">
                 ${badge}
+                ${outOfStockBadge}
                 <div class="product-image">
                     <img src="${product.image || 'https://via.placeholder.com/300x200?text=صورة'}" 
                          alt="${cleanName}"
@@ -637,10 +923,9 @@ function displayProducts(productsToShow = processedProducts) {
                          loading="lazy">
                 </div>
                 <div class="product-info">
-                    <div class="product-name">${cleanName || 'منتج'}</div>
+                    <div class="product-name">${cleanName}</div>
                     <div class="product-price">
                         ${product.finalPrice} جنيه
-                        <!-- تم إزالة originalPriceHtml -->
                     </div>
                 </div>
             </div>
@@ -651,7 +936,10 @@ function displayProducts(productsToShow = processedProducts) {
     
     productsContainer.innerHTML = '';
     productsContainer.appendChild(fragment);
-    showingCountSpan.textContent = `عرض ${productsToShow.length}`;
+    
+    const availableCount = productsToShow.filter(p => p.isAvailable).length;
+    const unavailableCount = productsToShow.length - availableCount;
+    showingCountSpan.textContent = `عرض ${productsToShow.length} (متوفر ${availableCount} - غير متوفر ${unavailableCount})`;
 }
 
 // البحث في المنتجات
@@ -659,7 +947,7 @@ function searchProducts(searchTerm) {
     if (!searchTerm.trim()) return processedProducts;
     const term = searchTerm.toLowerCase().trim();
     return processedProducts.filter(product => 
-        cleanText(product.name).toLowerCase().includes(term)
+        (product.displayName || '').toLowerCase().includes(term)
     );
 }
 
@@ -670,7 +958,7 @@ function updateStats() {
 
 // ==================== جلب البيانات ====================
 
-// جلب أسعار العملات من الشيت (الرابط الجديد)
+// جلب أسعار العملات
 async function fetchCurrencyRates() {
     try {
         yuanPriceSpan.style.opacity = '0.5';
@@ -679,24 +967,16 @@ async function fetchCurrencyRates() {
         const response = await fetch(CURRENCY_API_URL);
         const jsonData = await response.json();
         
-        console.log("بيانات العملات من الرابط الجديد:", jsonData);
+        console.log("بيانات العملات:", jsonData);
         
-        // استخراج الأسعار من البيانات
         let yuanRate = 0, dollarRate = 0;
         
-        if (jsonData.cny) {
-            yuanRate = parseFloat(jsonData.cny);
-        } else if (jsonData.yuan) {
-            yuanRate = parseFloat(jsonData.yuan);
-        }
+        if (jsonData.cny) yuanRate = parseFloat(jsonData.cny);
+        else if (jsonData.yuan) yuanRate = parseFloat(jsonData.yuan);
         
-        if (jsonData.usd) {
-            dollarRate = parseFloat(jsonData.usd);
-        } else if (jsonData.dollar) {
-            dollarRate = parseFloat(jsonData.dollar);
-        }
+        if (jsonData.usd) dollarRate = parseFloat(jsonData.usd);
+        else if (jsonData.dollar) dollarRate = parseFloat(jsonData.dollar);
         
-        // تحديث الأسعار
         previousYuanRate = currentYuanRate;
         previousDollarRate = currentDollarRate;
         
@@ -709,7 +989,6 @@ async function fetchCurrencyRates() {
         yuanPriceSpan.style.opacity = '1';
         dollarPriceSpan.style.opacity = '1';
         
-        // تحديث أسعار المنتجات إذا كانت موجودة
         if (allProducts.length > 0) {
             processAllProducts();
             const searchTerm = searchInput.value.trim();
@@ -725,7 +1004,7 @@ async function fetchCurrencyRates() {
     }
 }
 
-// جلب المنتجات من الشيت
+// جلب المنتجات
 async function fetchProducts() {
     if (cachedProducts) {
         allProducts = cachedProducts;
@@ -759,10 +1038,10 @@ async function fetchProducts() {
                    product.price && 
                    parseFloat(product.price) > 0;
         }).map(product => ({
-            name: product.name,
+            name: product.name, // الاسم كامل مع الرمز
             image: product.image || '',
-            price: parseFloat(product.price) || 0,
-            special: product.special ? product.special.toString().trim() : ''
+            price: parseFloat(product.price) || 0
+            // ملاحظة: لم نعد نستخدم product.special لأن الرمز أصبح في الاسم
         }));
         
         cachedProducts = allProducts;
@@ -779,7 +1058,6 @@ async function fetchProducts() {
 
 // ==================== أحداث وتشغيل ====================
 
-// البحث المباشر
 let searchTimeout;
 searchInput.addEventListener('input', (e) => {
     clearTimeout(searchTimeout);
@@ -789,16 +1067,13 @@ searchInput.addEventListener('input', (e) => {
     }, 300);
 });
 
-// تحديث التاريخ كل دقيقة
 setInterval(() => {
     currentDateSpan.innerHTML = `📅 ${getFormattedDate()}`;
 }, 60000);
 
-// بدء التطبيق
 currentDateSpan.innerHTML = `📅 ${getFormattedDate()}`;
 fetchProducts();
 
-// تحديث الأسعار كل 60 دقيقة (3600000 ملي ثانية)
 setInterval(fetchCurrencyRates, 3600000);
 </script>
 
